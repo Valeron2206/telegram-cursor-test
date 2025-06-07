@@ -27,7 +27,6 @@ class TelegramCursorTest {
         this.setupEvents();
         
         console.log('✅ Готов к тестированию бага курсора');
-        
     }
     
     initTelegram() {
@@ -37,6 +36,8 @@ class TelegramCursorTest {
             this.tg.expand();
             this.tg.setHeaderColor('#2481cc');
             this.tg.setBackgroundColor('#17212b');
+        } else {
+            console.log('🌐 Обычный браузер (не Telegram)');
         }
     }
     
@@ -66,15 +67,18 @@ class TelegramCursorTest {
         if (!text) return;
         
         console.log('📤 Отправка сообщения:', text);
+        
         this.addMessage(text, true);
         this.messageInput.value = '';
-        
     }
     
     addMessage(text, isOutgoing = false) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${isOutgoing ? 'outgoing' : 'incoming'}`;
-        messageDiv.innerHTML = `<div class="message-bubble">${text}</div>`;
+        messageDiv.className = `message ${isOutgoing ? 'outgoing' : 'incoming'} new`;
+        
+        messageDiv.innerHTML = `
+            <div class="message-bubble">${text}</div>
+        `;
         
         this.messagesArea.appendChild(messageDiv);
         
