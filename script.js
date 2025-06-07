@@ -1,4 +1,4 @@
-class TelegramCursorTest {
+class TelegramApp {
     constructor() {
         this.tg = window.Telegram?.WebApp;
         this.messageInput = null;
@@ -9,8 +9,6 @@ class TelegramCursorTest {
     }
     
     init() {
-        console.log('🚀 Telegram Mini App - Тест курсора');
-        
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.setup());
         } else {
@@ -25,29 +23,27 @@ class TelegramCursorTest {
         
         this.initTelegram();
         this.setupEvents();
-        
-        console.log('✅ Готов к тестированию бага курсора');
     }
     
     initTelegram() {
         if (this.tg) {
-            console.log('📱 Telegram WebApp активен');
             this.tg.ready();
             this.tg.expand();
             this.tg.setHeaderColor('#2481cc');
             this.tg.setBackgroundColor('#17212b');
-        } else {
-            console.log('🌐 Обычный браузер (не Telegram)');
         }
     }
     
     setupEvents() {
         this.messageInput.addEventListener('focus', () => {
-            console.log('🎯 Поле получило фокус');
-        });
-        
-        this.messageInput.addEventListener('blur', () => {
-            console.log('👋 Поле потеряло фокус');
+            if (this.isIOS()) {
+                setTimeout(() => {
+                    this.messageInput.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }, 300);
+            }
         });
         
         this.sendButton.addEventListener('click', () => {
@@ -66,10 +62,12 @@ class TelegramCursorTest {
         const text = this.messageInput.value.trim();
         if (!text) return;
         
-        console.log('📤 Отправка сообщения:', text);
-        
         this.addMessage(text, true);
         this.messageInput.value = '';
+        
+        setTimeout(() => {
+            this.messageInput.focus();
+        }, 100);
     }
     
     addMessage(text, isOutgoing = false) {
@@ -92,4 +90,4 @@ class TelegramCursorTest {
     }
 }
 
-new TelegramCursorTest();
+new TelegramApp();
