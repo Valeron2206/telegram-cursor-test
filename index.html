@@ -3,71 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Telegram Mini App - iOS Cursor Bug</title>
+    <title>Безопасная среда РЖД</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <!-- Header в стиле WhatsApp -->
+    <!-- Telegram Header -->
     <div class="header">
         <div class="header-content">
-            <div class="chat-avatar">🧪</div>
-            <div class="chat-info">
-                <h1>iOS Cursor Test</h1>
-                <span class="status" id="status">Готов к тестированию</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Messages Area -->
-    <div class="messages-container" id="messages">
-        <div class="message-group">
-            <div class="message incoming">
-                <div class="message-bubble">
-                    Привет! 👋<br>
-                    Это тест бага с курсором на iOS
-                </div>
-                <div class="message-time">19:19</div>
-            </div>
-            <div class="message incoming">
-                <div class="message-bubble">
-                    Инструкция:<br>
-                    1. Нажми на поле ввода внизу<br>
-                    2. На iPhone курсор уедет выше поля<br>
-                    3. Попробуй проскроллить - курсор вернется
-                </div>
-                <div class="message-time">19:19</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Fixed Input Area (WhatsApp Style) -->
-    <div class="input-area">
-        <div class="input-container">
-            <input 
-                type="text" 
-                id="message-input" 
-                class="message-input" 
-                placeholder="Сообщение"
-                autocomplete="off"
-            >
-            <button class="send-button" id="send-btn">
+            <button class="back-button">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"/>
+                    <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" fill="currentColor"/>
+                </svg>
+            </button>
+            <div class="chat-title">Чат</div>
+            <button class="menu-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="5" r="2" fill="currentColor"/>
+                    <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                    <circle cx="12" cy="19" r="2" fill="currentColor"/>
                 </svg>
             </button>
         </div>
-        
-        <!-- Debug info (скрытая по умолчанию) -->
-        <div class="debug-panel" id="debug-panel">
-            <div class="debug-item">
-                Platform: <span id="platform">-</span>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+        <!-- Messages Area -->
+        <div class="messages-area" id="messages">
+            <div class="message incoming">
+                <div class="message-bubble">Привет!</div>
             </div>
-            <div class="debug-item">
-                Viewport: <span id="viewport">-</span>
+            <div class="message outgoing">
+                <div class="message-bubble">Как дела?</div>
             </div>
-            <div class="debug-item">
-                Keyboard: <span id="keyboard">-</span>
+            <div class="message incoming">
+                <div class="message-bubble">Всё отлично, спасибо!</div>
+            </div>
+            <div class="message outgoing">
+                <div class="message-bubble">Отлично. Давай тестировать.</div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <div class="input-container">
+                <input 
+                    type="text" 
+                    id="message-input" 
+                    class="message-input" 
+                    placeholder="Напишите сообщение..."
+                    autocomplete="off"
+                >
+                <button class="send-button" id="send-btn">
+                    Отправить
+                </button>
             </div>
         </div>
     </div>
