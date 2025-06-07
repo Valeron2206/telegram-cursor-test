@@ -3,132 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Telegram Mini App - iOS Cursor Bug Demo</title>
-    
-    <!-- Telegram Web App Script -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Подключение CSS -->
+    <title>Telegram Mini App - iOS Cursor Bug</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <div class="tg-container">
-        <div class="header">
-            <h1>🤖 Telegram Mini App</h1>
-            <p>Демонстрация проблемы с курсором на iOS в мини-приложении</p>
-            <div class="tg-user-info">
-                <span id="user-name">Загрузка...</span>
-            </div>
-            <div class="platform-info">
-                <span id="platform-badge">Определение платформы...</span>
-            </div>
-        </div>
-        
-        <div class="content">
-            <div class="chat-simulation">
-                <div class="message tg-message">Привет! Это Telegram Mini App</div>
-                <div class="message tg-message">Тестируем проблему с курсором на iOS</div>
-                <div class="message tg-message">При фокусе на поле внизу курсор уезжает выше поля</div>
-                <div class="message tg-message">Это происходит из-за конфликта viewport в Telegram WebApp</div>
-                <div class="message tg-message">📱 Для воспроизведения:</div>
-                <div class="message tg-message">1. Откройте в Telegram на iPhone</div>
-                <div class="message tg-message">2. Прокрутите к полю ввода внизу</div>
-                <div class="message tg-message">3. Нажмите на поле ввода</div>
-                <div class="message tg-message">4. 🐛 Курсор появится ВЫШЕ поля!</div>
-                <div class="message tg-message">Сообщение 5</div>
-                <div class="message tg-message">Сообщение 6</div>
-                <div class="message tg-message">Сообщение 7</div>
-                <div class="message tg-message">Длинное сообщение для создания скролла и демонстрации проблемы с позиционированием курсора</div>
-                <div class="message tg-message">Еще одно сообщение</div>
-                <div class="message tg-message">И еще одно для полноты</div>
-                <div class="message tg-message">Прокрутите вниз к полю ввода</div>
-                <div class="message tg-message">Нажмите на поле и увидите баг!</div>
-                <div class="message tg-message">Тест сообщение 13</div>
-                <div class="message tg-message">Тест сообщение 14</div>
-                <div class="message tg-message">Последнее сообщение перед полем ввода</div>
+    <!-- Header в стиле WhatsApp -->
+    <div class="header">
+        <div class="header-content">
+            <div class="chat-avatar">🧪</div>
+            <div class="chat-info">
+                <h1>iOS Cursor Test</h1>
+                <span class="status" id="status">Готов к тестированию</span>
             </div>
         </div>
     </div>
-    
-    <!-- ФИКСИРОВАННОЕ ПОЛЕ КАК В TELEGRAM MINI APP -->
-    <div class="tg-input-container">
-        <!-- Имитация MainButton области Telegram -->
-        <div class="tg-main-button-area">
-            <button class="tg-main-button" id="main-button">
-                🚀 Главная кнопка Telegram
-            </button>
+
+    <!-- Messages Area -->
+    <div class="messages-container" id="messages">
+        <div class="message-group">
+            <div class="message incoming">
+                <div class="message-bubble">
+                    Привет! 👋<br>
+                    Это тест бага с курсором на iOS
+                </div>
+                <div class="message-time">19:19</div>
+            </div>
+            <div class="message incoming">
+                <div class="message-bubble">
+                    Инструкция:<br>
+                    1. Нажми на поле ввода внизу<br>
+                    2. На iPhone курсор уедет выше поля<br>
+                    3. Попробуй проскроллить - курсор вернется
+                </div>
+                <div class="message-time">19:19</div>
+            </div>
         </div>
-        
-        <!-- Основное поле ввода -->
-        <div class="tg-input-wrapper">
+    </div>
+
+    <!-- Fixed Input Area (WhatsApp Style) -->
+    <div class="input-area">
+        <div class="input-container">
             <input 
                 type="text" 
-                class="tg-input" 
-                id="main-input"
-                placeholder="Введите сообщение в Mini App..."
+                id="message-input" 
+                class="message-input" 
+                placeholder="Сообщение"
                 autocomplete="off"
             >
-            <button class="tg-send-btn" id="send-button">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z"/>
+            <button class="send-button" id="send-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="currentColor"/>
                 </svg>
             </button>
         </div>
         
-        <!-- Дополнительные поля как в формах Mini App -->
-        <div class="tg-form-fields">
-            <input type="text" class="tg-field" placeholder="Поле формы 1">
-            <input type="email" class="tg-field" placeholder="Email в Mini App">
-            <input type="tel" class="tg-field" placeholder="Телефон">
-            <textarea class="tg-field tg-textarea" placeholder="Комментарий в форме..." rows="2"></textarea>
-        </div>
-    </div>
-    
-    <!-- Индикатор проблемы с курсором -->
-    <div id="cursor-problem-indicator">
-        <div class="indicator-arrow">↑</div>
-        <div class="indicator-text">КУРСОР ЗДЕСЬ</div>
-        <div class="indicator-gap">ПУСТОЕ МЕСТО</div>
-        <div class="indicator-field">ПОЛЕ ВВОДА ЗДЕСЬ</div>
-    </div>
-    
-    <!-- Панель отладки -->
-    <div class="tg-debug-panel">
-        <h3>🔍 Telegram Mini App - iOS баг курсора:</h3>
-        <ul>
-            <li><strong>Шаг 1:</strong> Откройте в Telegram на iPhone</li>
-            <li><strong>Шаг 2:</strong> Скролльте к полю ввода внизу</li>
-            <li><strong>Шаг 3:</strong> Нажмите на поле ввода</li>
-            <li><strong>🐛 Проблема:</strong> Курсор появится ВЫШЕ поля!</li>
-            <li><strong>Причина:</strong> Конфликт Telegram WebApp viewport с iOS Safari</li>
-        </ul>
-        
-        <div class="tg-info">
-            <div class="info-row">
-                <span class="info-label">WebApp версия:</span>
-                <span id="webapp-version">-</span>
+        <!-- Debug info (скрытая по умолчанию) -->
+        <div class="debug-panel" id="debug-panel">
+            <div class="debug-item">
+                Platform: <span id="platform">-</span>
             </div>
-            <div class="info-row">
-                <span class="info-label">Платформа:</span>
-                <span id="platform">-</span>
+            <div class="debug-item">
+                Viewport: <span id="viewport">-</span>
             </div>
-            <div class="info-row">
-                <span class="info-label">Viewport:</span>
-                <span id="viewport-info">-</span>
-            </div>
-            <div class="info-row">
-                <span class="info-label">Статус:</span>
-                <span id="bug-status">Ожидание теста...</span>
+            <div class="debug-item">
+                Keyboard: <span id="keyboard">-</span>
             </div>
         </div>
     </div>
-    
-    <!-- Кнопка тестирования -->
-    <button id="test-focus-button" class="test-button">
-        🧪 Тест фокуса
-    </button>
-    
-    <!-- Подключение JavaScript -->
+
     <script src="script.js"></script>
 </body>
 </html>

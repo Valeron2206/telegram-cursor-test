@@ -1,549 +1,280 @@
-/* Сброс стилей */
+/* WhatsApp Style Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Основные стили для Telegram Mini App */
+/* Светлая тема в стиле WhatsApp */
+:root {
+    --whatsapp-green: #25D366;
+    --whatsapp-green-dark: #128C7E;
+    --whatsapp-light-green: #DCF8C6;
+    --whatsapp-gray: #ECE5DD;
+    --whatsapp-dark-gray: #34495E;
+    --whatsapp-light-gray: #F7F7F7;
+    --text-primary: #000000;
+    --text-secondary: #667781;
+    --background: #E5DDD5;
+    --chat-background: #FFFFFF;
+    --border-color: #E1E1E1;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background: var(--tg-theme-bg-color, #ffffff);
-    color: var(--tg-theme-text-color, #000000);
-    min-height: 100vh;
-    overflow-x: hidden;
-    
-    /* Telegram Mini App специфичные стили */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    /* Отключаем выделение текста */
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: transparent;
-    
-    /* Предотвращение зума на iOS */
-    touch-action: manipulation;
 }
 
-/* Основной контейнер */
-.tg-container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    /* Оставляем место для фиксированного поля ввода */
-    padding-bottom: 220px;
-}
-
-/* Заголовок */
+/* Header в стиле WhatsApp */
 .header {
-    background: var(--tg-theme-secondary-bg-color, #f1f1f1);
-    padding: 20px;
-    text-align: center;
-    border-bottom: 1px solid var(--tg-theme-hint-color, #c8c7cc);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    backdrop-filter: blur(10px);
+    background: var(--whatsapp-green);
+    color: white;
+    padding: 10px 16px;
+    box-shadow: 0 1px 3px var(--shadow);
+    flex-shrink: 0;
+    z-index: 1000;
 }
 
-.header h1 {
-    color: var(--tg-theme-text-color, #000000);
-    margin-bottom: 8px;
-    font-size: 22px;
-    font-weight: 600;
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.header p {
-    color: var(--tg-theme-hint-color, #999999);
-    font-size: 14px;
-    margin-bottom: 12px;
-    line-height: 1.4;
+.chat-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
 }
 
-.tg-user-info {
-    background: var(--tg-theme-button-color, #2481cc);
-    color: var(--tg-theme-button-text-color, #ffffff);
-    padding: 8px 16px;
-    border-radius: 16px;
-    display: inline-block;
-    font-size: 14px;
+.chat-info h1 {
+    font-size: 16px;
     font-weight: 500;
-    margin-bottom: 8px;
+    margin: 0;
 }
 
-.platform-info {
-    margin-top: 8px;
+.status {
+    font-size: 13px;
+    opacity: 0.9;
 }
 
-#platform-badge {
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
-
-#platform-badge.ios-telegram {
-    background: #FF3B30;
-    color: white;
-}
-
-#platform-badge.ios {
-    background: #FF9500;
-    color: white;
-}
-
-#platform-badge.other {
-    background: var(--tg-theme-hint-color, #999999);
-    color: white;
-}
-
-/* Контент */
-.content {
+/* Messages Container */
+.messages-container {
     flex: 1;
+    background: var(--background);
     overflow-y: auto;
-    padding: 0;
+    padding: 8px 0;
+    padding-bottom: 80px; /* Место для поля ввода */
+    -webkit-overflow-scrolling: touch;
 }
 
-.chat-simulation {
-    padding: 20px;
-    max-width: 100%;
+.message-group {
+    padding: 0 8px;
 }
 
 .message {
-    background: var(--tg-theme-secondary-bg-color, #f1f1f1);
-    padding: 14px 18px;
-    margin-bottom: 10px;
-    border-radius: 16px;
-    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    margin: 4px 0;
+    max-width: 80%;
+}
+
+.message.incoming {
+    align-items: flex-start;
+}
+
+.message.outgoing {
+    align-items: flex-end;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.message-bubble {
+    background: white;
+    padding: 8px 12px;
+    border-radius: 18px;
+    box-shadow: 0 1px 2px var(--shadow);
+    font-size: 14px;
     line-height: 1.4;
-    color: var(--tg-theme-text-color, #000000);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
+    word-wrap: break-word;
+    position: relative;
 }
 
-.message:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+.message.incoming .message-bubble {
+    background: white;
+    border-bottom-left-radius: 4px;
 }
 
-.tg-message:nth-child(odd) {
-    background: var(--tg-theme-bg-color, #ffffff);
-    border: 1px solid var(--tg-theme-hint-color, rgba(0,0,0,0.08));
+.message.outgoing .message-bubble {
+    background: var(--whatsapp-light-green);
+    border-bottom-right-radius: 4px;
 }
 
-.tg-message:nth-child(even) {
-    background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+.message-time {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin: 2px 8px;
 }
 
-/* ФИКСИРОВАННАЯ ОБЛАСТЬ ВВОДА - ТУТ ПРОБЛЕМА НА iOS! */
-.tg-input-container {
+/* Fixed Input Area */
+.input-area {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: var(--tg-theme-bg-color, #ffffff);
-    border-top: 1px solid var(--tg-theme-hint-color, #c8c7cc);
+    background: var(--chat-background);
+    border-top: 1px solid var(--border-color);
+    padding: 8px;
     z-index: 1000;
-    
-    /* Telegram WebApp специфичные отступы */
-    padding: 16px;
-    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    
-    /* Тень как в настоящем Telegram */
-    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(20px);
+    box-shadow: 0 -1px 3px var(--shadow);
 }
 
-/* MainButton область */
-.tg-main-button-area {
-    margin-bottom: 12px;
-}
-
-.tg-main-button {
-    width: 100%;
-    padding: 16px;
-    background: var(--tg-theme-button-color, #2481cc);
-    color: var(--tg-theme-button-text-color, #ffffff);
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(36, 129, 204, 0.3);
-}
-
-.tg-main-button:hover {
-    background: var(--tg-theme-button-color, #1c6ba0);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(36, 129, 204, 0.4);
-}
-
-.tg-main-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(36, 129, 204, 0.3);
-}
-
-/* Поле ввода сообщений */
-.tg-input-wrapper {
+.input-container {
     display: flex;
-    gap: 10px;
-    align-items: center;
-    margin-bottom: 14px;
+    align-items: flex-end;
+    gap: 8px;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    padding: 4px 4px 4px 16px;
+    box-shadow: 0 1px 3px var(--shadow);
 }
 
-.tg-input {
+/* Main Input Field - ТУТ ПРОИСХОДИТ БАГ НА iOS */
+.message-input {
     flex: 1;
-    padding: 14px 18px;
-    border: 2px solid var(--tg-theme-hint-color, #c8c7cc);
-    border-radius: 24px;
-    font-size: 16px; /* Важно для iOS - предотвращает зум */
-    background: var(--tg-theme-bg-color, #ffffff);
-    color: var(--tg-theme-text-color, #000000);
-    outline: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.tg-input:focus {
-    border-color: var(--tg-theme-button-color, #2481cc);
-    box-shadow: 0 0 0 3px rgba(36, 129, 204, 0.15);
-    background: #ffffff;
-}
-
-.tg-input::placeholder {
-    color: var(--tg-theme-hint-color, #999999);
-}
-
-.tg-send-btn {
-    width: 44px;
-    height: 44px;
-    background: var(--tg-theme-button-color, #2481cc);
-    color: var(--tg-theme-button-text-color, #ffffff);
     border: none;
-    border-radius: 22px;
+    outline: none;
+    background: transparent;
+    font-size: 16px; /* Важно: предотвращает zoom на iOS */
+    color: var(--text-primary);
+    padding: 10px 0;
+    min-height: 20px;
+    max-height: 100px;
+    resize: none;
+    
+    /* iOS specific */
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+}
+
+.message-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.message-input:focus {
+    outline: none;
+}
+
+/* Send Button */
+.send-button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: var(--whatsapp-green);
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(36, 129, 204, 0.3);
+    transition: background-color 0.2s;
+    flex-shrink: 0;
 }
 
-.tg-send-btn:hover {
-    background: var(--tg-theme-button-color, #1c6ba0);
-    transform: scale(1.05);
+.send-button:hover {
+    background: var(--whatsapp-green-dark);
 }
 
-.tg-send-btn:active {
+.send-button:active {
     transform: scale(0.95);
 }
 
-/* Поля формы */
-.tg-form-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.tg-field {
-    padding: 12px 16px;
-    border: 2px solid var(--tg-theme-hint-color, #c8c7cc);
-    border-radius: 12px;
-    font-size: 16px; /* Важно для iOS */
-    background: var(--tg-theme-bg-color, #ffffff);
-    color: var(--tg-theme-text-color, #000000);
-    outline: none;
-    transition: all 0.3s ease;
-    font-family: inherit;
-}
-
-.tg-field:focus {
-    border-color: var(--tg-theme-button-color, #2481cc);
-    box-shadow: 0 0 0 3px rgba(36, 129, 204, 0.15);
-    background: #ffffff;
-}
-
-.tg-field::placeholder {
-    color: var(--tg-theme-hint-color, #999999);
-}
-
-.tg-textarea {
-    min-height: 60px;
-    resize: vertical;
-    line-height: 1.4;
-}
-
-/* ИНДИКАТОР ПРОБЛЕМЫ С КУРСОРОМ */
-#cursor-problem-indicator {
-    position: fixed;
-    right: 20px;
-    bottom: 280px;
-    display: none;
-    z-index: 9999;
-    pointer-events: none;
-    animation: slideIn 0.5s ease-out;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(100px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.indicator-arrow {
-    color: #FF3B30;
-    font-size: 28px;
-    text-align: center;
-    animation: bounce 1.2s infinite;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-}
-
-.indicator-text {
-    background: #FF3B30;
-    color: white;
-    padding: 6px 12px;
+/* Debug Panel */
+.debug-panel {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.05);
     border-radius: 8px;
-    font-size: 12px;
-    font-weight: bold;
-    text-align: center;
-    margin: 8px 0;
-    box-shadow: 0 3px 8px rgba(255, 59, 48, 0.4);
-    white-space: nowrap;
+    font-size: 11px;
+    color: var(--text-secondary);
+    display: none; /* Скрыта по умолчанию */
 }
 
-.indicator-gap {
-    height: 40px;
-    border-left: 3px dashed #FF9500;
-    margin: 0 auto;
-    position: relative;
-    width: 3px;
+.debug-panel.show {
+    display: block;
 }
 
-.indicator-gap::after {
-    content: 'ПУСТОТА';
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #FF9500;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: bold;
-    white-space: nowrap;
-    box-shadow: 0 2px 6px rgba(255, 149, 0, 0.4);
+.debug-item {
+    margin: 2px 0;
 }
 
-.indicator-field {
-    background: #34C759;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: bold;
-    text-align: center;
-    box-shadow: 0 3px 8px rgba(52, 199, 89, 0.4);
-    white-space: nowrap;
-}
-
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-12px); }
-    60% { transform: translateY(-6px); }
-}
-
-/* Панель отладки */
-.tg-debug-panel {
-    background: var(--tg-theme-secondary-bg-color, #f8f9fa);
-    border: 1px solid var(--tg-theme-hint-color, #dee2e6);
-    border-radius: 12px;
-    padding: 18px;
-    margin: 20px;
-    font-size: 14px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.tg-debug-panel h3 {
-    color: var(--tg-theme-text-color, #000000);
-    margin-bottom: 14px;
-    font-size: 17px;
-    font-weight: 600;
-}
-
-.tg-debug-panel ul {
-    margin-bottom: 18px;
-    margin-left: 18px;
-}
-
-.tg-debug-panel li {
-    margin-bottom: 8px;
-    line-height: 1.5;
-    color: var(--tg-theme-text-color, #000000);
-}
-
-.tg-debug-panel strong {
-    color: var(--tg-theme-link-color, #2481cc);
-}
-
-.tg-info {
-    background: var(--tg-theme-bg-color, #ffffff);
-    padding: 14px;
-    border-radius: 8px;
-    border: 1px solid var(--tg-theme-hint-color, #dee2e6);
-}
-
-.info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-    font-size: 13px;
-}
-
-.info-row:last-child {
-    margin-bottom: 0;
-}
-
-.info-label {
-    color: var(--tg-theme-hint-color, #6c757d);
-    font-weight: 500;
-}
-
-.info-row span:last-child {
-    color: var(--tg-theme-text-color, #000000);
-    font-weight: 600;
-    font-family: 'SF Mono', Monaco, monospace;
-}
-
-/* Кнопка тестирования */
-.test-button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #FF3B30;
-    color: white;
-    border: none;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: bold;
-    z-index: 9999;
-    cursor: pointer;
-    box-shadow: 0 3px 10px rgba(255, 59, 48, 0.4);
-    transition: all 0.3s ease;
-}
-
-.test-button:hover {
-    background: #D70015;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 59, 48, 0.5);
-}
-
-.test-button:active {
-    transform: translateY(0);
-}
-
-/* iOS Safari в Telegram WebApp специфичные стили */
+/* iOS Specific Fixes */
 @supports (-webkit-touch-callout: none) {
-    /* Это iOS Safari */
-    .tg-input-container {
-        /* НЕ добавляем фиксы для демонстрации проблемы */
-        /* В реальном приложении тут были бы исправления */
+    /* Только для iOS Safari */
+    .message-input {
+        font-size: 16px !important; /* Предотвращает zoom */
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
     }
     
-    .tg-input,
-    .tg-field,
-    .tg-textarea {
-        /* Предотвращаем зум, но НЕ фиксим позицию курсора */
-        font-size: 16px !important;
-        -webkit-appearance: none;
-        border-radius: 12px;
-    }
-    
-    /* Дополнительные стили для iOS */
-    body {
-        -webkit-overflow-scrolling: touch;
+    .input-area {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 }
 
-/* Мобильная адаптация для Telegram */
+/* Responsive */
 @media (max-width: 480px) {
     .header {
-        padding: 16px;
+        padding: 8px 12px;
     }
     
-    .header h1 {
-        font-size: 20px;
+    .chat-info h1 {
+        font-size: 15px;
     }
     
-    .tg-input-container {
-        padding: 12px;
-    }
-    
-    .tg-input {
-        font-size: 16px;
-        padding: 12px 16px;
-    }
-    
-    .tg-field {
-        font-size: 16px;
-        padding: 10px 14px;
-    }
-    
-    .chat-simulation {
-        padding: 16px;
+    .status {
+        font-size: 12px;
     }
     
     .message {
-        font-size: 15px;
-        padding: 12px 16px;
+        max-width: 85%;
     }
     
-    .tg-debug-panel {
-        margin: 16px;
-        padding: 16px;
-    }
-    
-    .test-button {
-        top: 16px;
-        right: 16px;
-        padding: 10px 14px;
-        font-size: 13px;
-    }
-    
-    #cursor-problem-indicator {
-        right: 16px;
-        bottom: 260px;
+    .input-area {
+        padding: 6px;
     }
 }
 
-/* Дополнительные адаптации для iPhone */
-@media (max-width: 390px) {
-    .indicator-text,
-    .indicator-field {
-        font-size: 11px;
-        padding: 4px 8px;
+/* Landscape orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+    .messages-container {
+        padding-bottom: 70px;
     }
     
-    .indicator-gap::after {
-        font-size: 9px;
-        padding: 2px 6px;
+    .header {
+        padding: 6px 12px;
     }
 }
 
-/* Анимации для улучшения UX */
-.message {
-    animation: fadeInUp 0.3s ease-out;
-}
-
-@keyframes fadeInUp {
+/* Animation for new messages */
+@keyframes messageSlideIn {
     from {
         opacity: 0;
         transform: translateY(20px);
@@ -554,13 +285,6 @@ body {
     }
 }
 
-/* Скрытие элементов на очень маленьких экранах */
-@media (max-width: 320px) {
-    .tg-debug-panel {
-        font-size: 13px;
-    }
-    
-    .platform-info {
-        display: none;
-    }
+.message.new {
+    animation: messageSlideIn 0.3s ease-out;
 }
