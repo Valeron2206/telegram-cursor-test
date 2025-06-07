@@ -4,6 +4,8 @@ class TelegramApp {
         this.messageInput = null;
         this.sendButton = null;
         this.messagesArea = null;
+        this.inputArea = null;
+        this.isKeyboardOpen = false;
         
         this.init();
     }
@@ -20,9 +22,11 @@ class TelegramApp {
         this.messageInput = document.getElementById('message-input');
         this.sendButton = document.getElementById('send-btn');
         this.messagesArea = document.getElementById('messages');
+        this.inputArea = document.getElementById('input-area');
         
         this.initTelegram();
         this.setupEvents();
+        this.setupViewportMonitoring();
     }
     
     initTelegram() {
@@ -36,14 +40,12 @@ class TelegramApp {
     
     setupEvents() {
         this.messageInput.addEventListener('focus', () => {
-            if (this.isIOS()) {
-                setTimeout(() => {
-                    this.messageInput.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center'
-                    });
-                }, 300);
-            }
+            if (!this.isIOS()) return;
+            
+            this.messageInput.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
         });
         
         this.sendButton.addEventListener('click', () => {
@@ -56,6 +58,28 @@ class TelegramApp {
                 this.sendMessage();
             }
         });
+    }
+    
+    setupViewportMonitoring() {
+        if (!window.visualViewport || !this.isIOS()) return;
+        
+        const handleViewportChange = () => {
+            const keyboardHeight = window.innerHeight - window.visualViewport.height;
+            const wasKeyboardOpen = this.isKeyboardOpen;
+            this.isKeyboardOpen = keyboardHeight > 0;
+            
+            if (this.isKeyboardOpen) {
+                const safeAreaBottom = window.screen.height - window.visualViewport.height - window.visualViewport.offsetTop;
+                this.inputArea.style.transform = `translateY(-${keyboardHeight}px)`;
+                this.messagesArea.style.paddingBottom = `${80 + keyboardHeight}px`;
+            } else if (wasKeyboardOpen) {
+                this.inputArea.style.transform = 'translateY(0)';
+                this.messagesArea.style.paddingBottom = '80px';
+            }
+        };
+        
+        window.visualViewport.addEventListener('resize', handleViewportChange);
+        window.visualViewport.addEventListener('scroll', handleViewportChange);
     }
     
     sendMessage() {
