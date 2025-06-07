@@ -3,92 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>iOS Cursor Bug Demo</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Безопасная среда РЖД</title>
+    <link rel="stylesheet" href="styles-no-bug.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <!-- Header -->
     <div class="header">
         <div class="header-content">
-            <button class="back-button">‹</button>
-            <div class="chat-title">iOS Cursor Bug Test</div>
-            <button class="menu-button">⋮</button>
+            <button class="back-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" fill="currentColor"/>
+                </svg>
+            </button>
+            <div class="chat-title">Чат</div>
+            <button class="menu-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="5" r="2" fill="currentColor"/>
+                    <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                    <circle cx="12" cy="19" r="2" fill="currentColor"/>
+                </svg>
+            </button>
         </div>
     </div>
 
-    <!-- Chat Messages -->
     <div class="chat-container">
         <div class="messages-area" id="messages">
-            <!-- Создаем МНОГО сообщений для длинной прокрутки -->
             <div class="message incoming">
-                <div class="message-bubble">🐛 Привет! Сейчас протестируем баг курсора на iPhone</div>
+                <div class="message-bubble">Привет!</div>
             </div>
             <div class="message outgoing">
-                <div class="message-bubble">Окей, как это работает?</div>
+                <div class="message-bubble">Как дела?</div>
             </div>
             <div class="message incoming">
-                <div class="message-bubble">Очень просто:<br>1️⃣ Прокрути вниз до поля ввода<br>2️⃣ Нажми на поле ввода<br>3️⃣ Курсор "уедет" наверх от поля!</div>
+                <div class="message-bubble">Всё отлично, спасибо!</div>
             </div>
-            
-            <!-- Заполняем много контента -->
-            <div class="debug-message">📱 Баг проявляется только на iPhone в Safari/Telegram</div>
-            <div class="debug-message">⚡ Когда появляется клавиатура - viewport изменяется</div>
-            <div class="debug-message">🎯 Но позиция курсора остается в старом месте</div>
-            <div class="debug-message">🔧 Решение: принудительно прокрутить к полю при фокусе</div>
-            <div class="debug-message">📊 Тест 1: Много контента для скролла</div>
-            <div class="debug-message">📈 Тест 2: Фиксированное поле ввода внизу</div>
-            <div class="debug-message">📉 Тест 3: Отсутствие автоматической прокрутки</div>
-            <div class="debug-message">🎬 Тест 4: Длинный список сообщений</div>
-            <div class="debug-message">🎪 Тест 5: Создание условий для бага</div>
-            <div class="debug-message">🎭 Тест 6: Проверка viewport изменений</div>
-            <div class="debug-message">🎨 Тест 7: Мониторинг клавиатуры</div>
-            <div class="debug-message">🎵 Тест 8: Отладка позиций элементов</div>
-            <div class="debug-message">🎸 Тест 9: Логирование событий фокуса</div>
-            <div class="debug-message">🎤 Тест 10: Финальная проверка</div>
-            
-            <!-- Еще больше контента -->
-            <div class="spacer">
-                <div class="spacer-item">📋 Сообщение А - создаем длинный скролл</div>
-                <div class="spacer-item">📄 Сообщение Б - чтобы поле ввода было внизу</div>
-                <div class="spacer-item">📃 Сообщение В - и баг точно проявился</div>
-                <div class="spacer-item">📜 Сообщение Г - на iPhone курсор уедет</div>
-                <div class="spacer-item">📰 Сообщение Д - выше поля ввода</div>
-                <div class="spacer-item">🗞️ Сообщение Е - это и есть баг iOS</div>
-                <div class="spacer-item">📑 Сообщение Ж - который мы тестируем</div>
-                <div class="spacer-item">📔 Сообщение З - почти дошли до конца</div>
-                <div class="spacer-item">📕 Сообщение И - последнее перед полем</div>
-                <div class="spacer-item">📗 Готов к тесту! Нажимай на поле ввода ⬇️</div>
+            <div class="message outgoing">
+                <div class="message-bubble">Отлично. Давай тестировать.</div>
             </div>
         </div>
 
-        <!-- Фиксированное поле ввода -->
-        <div class="input-area" id="input-area">
-            <div class="cursor-bug-indicator" id="bug-indicator">
-                🔴 На iPhone курсор будет здесь (НЕ в поле!)
-            </div>
-            
+        <div class="input-area">
             <div class="input-container">
                 <input 
                     type="text" 
                     id="message-input" 
                     class="message-input" 
-                    placeholder="Нажми сюда на iPhone..."
+                    placeholder="Напишите сообщение..."
                     autocomplete="off"
                 >
-                <button class="send-button" id="send-btn">📤</button>
-            </div>
-            
-            <!-- Переключатель для демонстрации фикса -->
-            <div class="fix-toggle">
-                <label>
-                    <input type="checkbox" id="fix-enabled"> 
-                    ✅ Включить фикс (scrollIntoView)
-                </label>
+                <button class="send-button" id="send-btn">
+                    Отправить
+                </button>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script-no-bug.js"></script>
 </body>
 </html>
