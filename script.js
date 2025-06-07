@@ -1,15 +1,16 @@
-class TelegramCursorTest {
+class iOSCursorBugDemo {
     constructor() {
         this.tg = window.Telegram?.WebApp;
         this.messageInput = null;
-        this.sendButton = null;
-        this.messagesArea = null;
+        this.bugIndicator = null;
+        this.fixEnabled = false;
+        this.isKeyboardOpen = false;
         
         this.init();
     }
     
     init() {
-        console.log('🚀 Telegram Mini App - Тест курсора');
+        console.log('🚀 iOS Cursor Bug Demo - Запуск');
         
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.setup());
@@ -19,22 +20,26 @@ class TelegramCursorTest {
     }
     
     setup() {
-        // Получаем элементы
         this.messageInput = document.getElementById('message-input');
-        this.sendButton = document.getElementById('send-btn');
-        this.messagesArea = document.getElementById('messages');
+        this.bugIndicator = document.getElementById('bug-indicator');
+        const fixToggle = document.getElementById('fix-enabled');
         
-        // Инициализация Telegram WebApp
         this.initTelegram();
         
         // Настройка событий
-        this.setupEvents();
+        this.setupInputEvents();
+        this.setupViewportMonitoring();
         
-        console.log('✅ Готов к тестированию бага курсора');
+        // Переключатель фикса
+        fixToggle.addEventListener('change', (e) => {
+            this.fixEnabled = e.target.checked;
+            console.log('🔧 Фикс', this.fixEnabled ? 'ВКЛЮЧЕН' : 'ВЫКЛЮЧЕН');
+        });
         
-        // Автоматически фокусируемся на поле через секунду
+        // Автоматически прокручиваем вниз
         setTimeout(() => {
-            this.messageInput.focus();
+            this.scrollToBottom();
+            console.log('✅ Готов к тесту! Нажмите на поле ввода на iPhone');
         }, 1000);
     }
     
@@ -43,96 +48,137 @@ class TelegramCursorTest {
             console.log('📱 Telegram WebApp активен');
             this.tg.ready();
             this.tg.expand();
-            
-            // Настройка цветов
             this.tg.setHeaderColor('#2481cc');
-            this.tg.setBackgroundColor('#17212b');
         } else {
-            console.log('🌐 Обычный браузер (не Telegram)');
+            console.log('🌐 Тестирование в обычном браузере');
         }
     }
     
-    setupEvents() {
-        // ФОКУС НА ПОЛЕ ВВОДА - ТУТ ПРОИСХОДИТ БАГ НА iOS
-        this.messageInput.addEventListener('focus', () => {
-            console.log('🎯 Поле получило фокус');
+    setupInputEvents() {
+        // ФОКУС НА ПОЛЕ - МОМЕНТ ИСТИНЫ!
+        this.messageInput.addEventListener('focus', (e) => {
+            console.log('🎯 FOCUS EVENT - поле получило фокус');
             
-            if (this.isIOS() && this.tg) {
-                console.log('🐛 iOS + Telegram WebApp = БАГ КУРСОРА!');
-                console.log('Курсор должен подняться выше поля ввода');
+            if (this.isIOS()) {
+                console.log('🍎 iOS ОБНАРУЖЕН!');
                 
-                // НЕ ИСПОЛЬЗУЕМ scrollIntoView - это воспроизводит баг
-                // this.messageInput.scrollIntoView(); // <- ЭТО ИСПРАВИЛО БЫ ПРОБЛЕМУ
+                if (this.fixEnabled) {
+                    console.log('✅ Фикс включен - применяем scrollIntoView');
+                    this.applyFix();
+                } else {
+                    console.log('🐛 Фикс выключен - БАГ ДОЛЖЕН ПРОЯВИТЬСЯ!');
+                    this.showBugIndicator();
+                }
             }
+            
+            // Мониторинг позиции
+            setTimeout(() => this.debugPosition(), 100);
+            setTimeout(() => this.debugPosition(), 300);
+            setTimeout(() => this.debugPosition(), 600);
         });
         
         // Потеря фокуса
         this.messageInput.addEventListener('blur', () => {
             console.log('👋 Поле потеряло фокус');
+            this.hideBugIndicator();
         });
         
         // Отправка сообщения
-        this.sendButton.addEventListener('click', () => {
-            this.sendMessage();
-        });
-        
-        // Enter для отправки
-        this.messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                this.sendMessage();
+        document.getElementById('send-btn').addEventListener('click', () => {
+            const text = this.messageInput.value.trim();
+            if (text) {
+                console.log('📤 Отправлено:', text);
+                this.messageInput.value = '';
+                
+                // Возвращаем фокус - может снова вызвать баг
+                setTimeout(() => {
+                    this.messageInput.focus();
+                }, 100);
             }
         });
-        
-        // Мониторинг изменений viewport для отладки
-        this.monitorViewport();
     }
     
-    sendMessage() {
-        const text = this.messageInput.value.trim();
-        if (!text) return;
-        
-        console.log('📤 Отправка сообщения:', text);
-        
-        // Добавляем сообщение
-        this.addMessage(text, true);
-        
-        // Очищаем поле
-        this.messageInput.value = '';
-        
-        // Возвращаем фокус (тут снова может проявиться баг)
-        setTimeout(() => {
-            this.messageInput.focus();
-        }, 100);
-    }
-    
-    addMessage(text, isOutgoing = false) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${isOutgoing ? 'outgoing' : 'incoming'} new`;
-        
-        messageDiv.innerHTML = `
-            <div class="message-bubble">${text}</div>
-        `;
-        
-        this.messagesArea.appendChild(messageDiv);
-        
-        // Прокрутка к новому сообщению
-        setTimeout(() => {
-            this.messagesArea.scrollTop = this.messagesArea.scrollHeight;
-        }, 100);
-    }
-    
-    monitorViewport() {
+    setupViewportMonitoring() {
+        // Visual Viewport API для отслеживания клавиатуры
         if (window.visualViewport) {
             window.visualViewport.addEventListener('resize', () => {
                 const keyboardHeight = window.innerHeight - window.visualViewport.height;
-                console.log('⌨️ Клавиатура:', keyboardHeight > 0 ? `высота ${keyboardHeight}px` : 'скрыта');
+                const wasKeyboardOpen = this.isKeyboardOpen;
+                this.isKeyboardOpen = keyboardHeight > 0;
                 
-                if (keyboardHeight > 0 && this.isIOS()) {
-                    console.log('🐛 ВНИМАНИЕ: На iOS курсор может быть выше поля ввода!');
+                if (this.isKeyboardOpen && !wasKeyboardOpen) {
+                    console.log('⌨️ Клавиатура ОТКРЫЛАСЬ! Высота:', keyboardHeight);
+                    
+                    if (this.isIOS() && !this.fixEnabled) {
+                        console.log('🐛 ВНИМАНИЕ: БАГ КУРСОРА АКТИВЕН!');
+                        setTimeout(() => {
+                            this.debugPosition();
+                        }, 200);
+                    }
+                } else if (!this.isKeyboardOpen && wasKeyboardOpen) {
+                    console.log('⌨️ Клавиатура закрылась');
+                    this.hideBugIndicator();
                 }
             });
         }
+        
+        // Обычные события resize
+        window.addEventListener('resize', () => {
+            console.log('📐 Window resize:', window.innerWidth, 'x', window.innerHeight);
+        });
+    }
+    
+    // ФИКС БАГА - scrollIntoView при фокусе
+    applyFix() {
+        console.log('🔧 Применяем фикс: scrollIntoView');
+        
+        // Метод 1: scrollIntoView
+        this.messageInput.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+        
+        // Метод 2: ручная прокрутка (альтернатива)
+        // const inputRect = this.messageInput.getBoundingClientRect();
+        // const viewportHeight = window.visualViewport?.height || window.innerHeight;
+        // if (inputRect.bottom > viewportHeight * 0.8) {
+        //     window.scrollBy(0, inputRect.bottom - viewportHeight * 0.7);
+        // }
+    }
+    
+    showBugIndicator() {
+        this.bugIndicator.classList.add('show');
+        console.log('🚨 Индикатор бага показан');
+    }
+    
+    hideBugIndicator() {
+        this.bugIndicator.classList.remove('show');
+    }
+    
+    debugPosition() {
+        const inputRect = this.messageInput.getBoundingClientRect();
+        const viewportHeight = window.visualViewport?.height || window.innerHeight;
+        const windowHeight = window.innerHeight;
+        
+        console.log('📍 DEBUG ПОЗИЦИИ:');
+        console.log('  Input top:', Math.round(inputRect.top));
+        console.log('  Input bottom:', Math.round(inputRect.bottom));
+        console.log('  Viewport height:', viewportHeight);
+        console.log('  Window height:', windowHeight);
+        console.log('  Input visible:', inputRect.top >= 0 && inputRect.bottom <= viewportHeight);
+        
+        if (inputRect.bottom > viewportHeight || inputRect.top < 0) {
+            console.log('🐛 БАГ ПОДТВЕРЖДЕН! Поле ввода не полностью видно');
+            console.log('💡 Курсор находится вне видимой области');
+        } else {
+            console.log('✅ Поле ввода видно полностью');
+        }
+    }
+    
+    scrollToBottom() {
+        const messagesArea = document.getElementById('messages');
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+        console.log('📜 Прокрутили вниз');
     }
     
     isIOS() {
@@ -140,14 +186,21 @@ class TelegramCursorTest {
     }
 }
 
-// Запуск приложения
-new TelegramCursorTest();
+// Запуск демонстрации
+new iOSCursorBugDemo();
 
-// Глобальные обработчики
-window.addEventListener('error', (e) => {
-    console.error('❌ Ошибка:', e.error);
-});
-
-console.log('📱 Тест бага курсора в Telegram Mini App');
-console.log('🎯 На iPhone: нажмите на поле ввода и курсор уедет выше!');
-console.log('🔧 Чтобы исправить - проскроллите немного или добавьте scrollIntoView()');
+// Инструкции в консоли
+console.log('📱 === iOS CURSOR BUG DEMO ===');
+console.log('');
+console.log('🎯 ИНСТРУКЦИЯ:');
+console.log('1. Откройте на iPhone в Telegram WebApp');
+console.log('2. Прокрутите до поля ввода внизу');
+console.log('3. Нажмите на поле ввода');
+console.log('4. 🐛 Курсор "уедет" выше поля!');
+console.log('5. ✅ Включите чекбокс "Включить фикс"');
+console.log('6. Нажмите на поле снова - баг исправлен!');
+console.log('');
+console.log('🔧 ТЕХНИЧЕСКОЕ РЕШЕНИЕ:');
+console.log('- При фокусе вызывать input.scrollIntoView()');
+console.log('- Или ручную прокрутку к полю ввода');
+console.log('- Мониторить изменения visualViewport');
